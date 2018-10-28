@@ -1,0 +1,170 @@
+<style media="screen">
+html,
+body {
+  background-color: transparent;
+}
+
+
+#loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -2.7em;
+  margin-left: -2.7em;
+  width: 10.4em;
+  height: 5.4em;
+  background-color: transparent;
+}
+
+#hill {
+  position: absolute;
+  width: 10.1em;
+  height: 10.1em;
+  top: 1.7em;
+  left: 1.7em;
+  background-color: transparent;
+  border-left: .3em solid black    ;
+  transform: rotate(45deg);
+}
+
+#hill:after {
+  content: '';
+  position: absolute;
+  width: 7.1em;
+  height: 7.1em;
+  left: 0;
+  background-color: transparent;
+}
+
+#box {
+  position: absolute;
+  left: 0;
+  bottom: -.1em;
+  width: 2em;
+  height: 2em;
+  background-color: transparent;
+  border: .5em solid black    ;
+  border-radius: 10%;
+  transform: translate(0, -1em) rotate(-45deg);
+  animation: push 2.6s cubic-bezier(.79, 0, .47, .97) infinite;
+}
+
+@keyframes push {
+  0% {
+    transform: translate(0, -1em) rotate(-45deg);
+  }
+  5% {
+    transform: translate(0, -1em) rotate(-50deg);
+  }
+  20% {
+    transform: translate(1em, -2em) rotate(47deg);
+  }
+  25% {
+    transform: translate(1em, -2em) rotate(45deg);
+  }
+  30% {
+    transform: translate(1em, -2em) rotate(40deg);
+  }
+  45% {
+    transform: translate(2em, -3em) rotate(137deg);
+  }
+  50% {
+    transform: translate(2em, -3em) rotate(135deg);
+  }
+  55% {
+    transform: translate(2em, -3em) rotate(130deg);
+  }
+  70% {
+    transform: translate(3em, -4em) rotate(217deg);
+  }
+  75% {
+    transform: translate(3em, -4em) rotate(220deg);
+  }
+  100% {
+    transform: translate(-0em, -1em) rotate(-225deg);
+  }
+}
+input[type="radio"]{
+  display:none !important;
+  background-color: transparent!important;
+}
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script type="text/javascript">
+$('body').ready(function(){
+  $("#loader").delay(2700).fadeOut("slow");
+  $(".aload").delay(3000).fadeIn("slow");
+})
+
+</script>
+
+<div style="background-color:#000;color:#000">
+  <div id="loader" >
+<div id="box"></div>
+<div id="hill"></div>
+</div>
+</div>
+<div class="aload" style="display:none">
+<link rel="stylesheet" href="/css/login.css" />
+<div class="login-wrap">
+	<div class="login-html">
+		<input id="tab-1" type="radio" name="tab" class="sign-in" style="background-color:#fff" checked ><label for="tab-1" class="tab">Sign In</label>
+		<input id="tab-2" type="radio" name="tab" class="sign-up"  ><label for="tab-2" class="tab">Sign Up</label>
+		<div class="login-form">
+			<div class="sign-in-htm">
+        <form method="post" action="/users/login">
+				<div class="group">
+					<label for="user" class="label">Username</label>
+					<input id="user" type="text" class="input" name="username">
+				</div>
+				<div class="group">
+					<label for="pass" class="label">Password</label>
+					<input id="pass" type="password" class="input" data-type="password" name="password" >
+				</div>
+				<div class="group">
+					<input id="check" type="checkbox" class="check" checked>
+					<label for="check"><span class="icon"></span> Keep me Signed in</label>
+				</div>
+				<div class="group">
+					<input type="submit" class="button" value="Sign In">
+				</div>
+				<div class="hr"></div>
+				<div class="foot-lnk">
+					<a href="#forgot">Forgot Password?</a>
+				</div>
+			</div></form>
+			<div class="sign-up-htm">
+        <form method="post" action="/users/register">
+        <div class="group">
+         <label for="name" class="label" >Name</label>
+         <input id="name" type="text" class="input" placeholder="Name" name="name">
+       </div>
+       <div class="group">
+         <label for="uname" class="label" >Username</label>
+         <input id="uname" type="text" class="input" placeholder="Username" name="username">
+       </div>
+        <div class="group">
+         <label for="ename" class="label" >Email</label>
+         <input type="email" id="ename"  class="input" placeholder="Email" name="email">
+       </div>
+       <div class="group">
+         <label for="pname" class="label" >Password</label>
+         <input type="password" id="pname" class="input" placeholder="Password" name="password">
+       </div>
+       <div class="group">
+         <label for="pcname" class="label" >Confirm Password</label>
+         <input type="password" id="pcname" class="input" placeholder="Password" name="password2">
+       </div>
+       <div class="group">
+         <input type="submit" class="button" value="Sign Up">
+       </div>
+				<div class="hr"></div>
+				<div class="foot-lnk">
+					<label for="tab-1">Already Member?</a>
+				</div></form>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

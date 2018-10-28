@@ -1,0 +1,60 @@
+
+<script>
+
+function smsg(){
+var data=document.getElementById('data').value;
+var disc=document.getElementById('disc').value;
+var to=document.getElementById('to').value;
+var user_id = "{{user._id}}";
+var usern="{{user.name}}";
+
+sdata = {data: data, user: user_id ,usrnm: usern ,fromn: "{{user.username}}" , to: to,from:usern,avatar:selfprofpic};
+socket.emit('msg', sdata);
+msg.innerHTML='<div class="well alert alert-info " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;text-align:right;" ><font size="-2" >'+sdata.data+'</font></div>'+msg.innerHTML;
+document.getElementById('msg').appendChild(msg);
+console.log(sdata);
+};
+
+
+
+
+
+
+
+</script>
+
+<h1 class="page-header">Send message</h1>
+{{#if errors}}
+      {{#each errors}}
+        <div class="alert alert-danger">{{msg}}</div>
+      {{/each}}
+{{/if}}
+
+
+
+  <div class="form-group">
+    <label>Tocall user</label>
+    <select id="to">
+      {{#each usrknn}}
+  <option value="{{data}}">{{data}}</option>
+    {{/each}}
+  </select>
+  </div>
+    <div class="form-group">
+    <label>Data</label>
+    <input type="text" class="form-control" name="data" placeholder="data" id="data" >
+  </div>
+  <div class="form-group">
+    <label>Discription</label>
+    <input type="text" class="form-control" name="Disc" placeholder="disc" id="disc" >
+  </div>
+  <button  class="btn btn-default" onclick="smsg()" >Submit</button>
+
+{{#if usrs}}
+      {{#each usrs}}
+      <form method="get" action="/users/smsg">
+        <div class="alert alert-danger">{{to}} :  {{{data}}}   <button type="submit" name="del" value="{{_id}}" class="btn btn-default">Delete</button></div>
+      </form>
+      {{/each}}
+
+{{/if}}

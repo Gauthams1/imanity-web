@@ -1,0 +1,374 @@
+{{#if tagath}}
+<div id="tag"></div>
+{{else}}
+  <div class="card">
+    <div class="card-image waves-effect waves-block waves-light">
+      <div id="outside">
+
+      </div>
+    </div>
+    <div class="card-content">
+      <span class="card-title activator grey-text text-darken-4">Emergency <i class="material-icons right">more_vert</i></span>
+      <p><div class="progress">
+      <div class="determinate" style="width:0%"></div>
+  </div>
+</p>
+    </div>
+    <div class="card-reveal">
+      <span class="card-title grey-text text-darken-4">Choose the Hospital<i class="material-icons right">close</i></span>
+      <p><div id="inside"></div></p>
+    </div>
+  </div>
+{{/if}}
+
+
+
+
+  <script type="text/javascript">
+selfprofpic="https://cdn2.lobster.media/assets/default_avatar-afa14913913cc117c73f1ac69496d74e.png";
+  {{#each tagsout.details}}
+  if("{{this.id}}"=="profpic"){
+  $("#propic").attr("src","{{this.data}}");
+  selfprofpic="{{this.data}}";
+  }
+  {{/each}}
+
+  {{#if info2}}
+  $("#outside").append('<div class="row"><div class="col s12"><div class="col s6"><h5>allergies</h5><div class="chips" id="allergies"></div></div><div class="col s6"><h5>habbit</h5><div class="chips" id="habbit"></div></div><div class="col s6"><h5>Contact from here</h5><div class="chips" id="emco"></div></div><div class="col s6"><h5>emergency contact number</h5><div class="chips" id="ecno"></div></div><div class="col s6"><h5>additional</h5><div class="chips" id="additional"></div></div><div class="col s6"><h5>Blood</h5><div class="chips" id="blood"></div></div><div class="col s12"><ul id="files" class="collapsible" data-collapsible="accordion"></ul></div></div></div>');
+$(document).ready(function(){
+  {{#each info2.data}}
+  $("#{{this.type}}").append('<div class="chip">{{this.data}}</div>')
+{{/each}}
+{{#each info1}}
+var temp2=document.createElement('div');
+temp2.innerHTML='<li><div class="collapsible-header"><i class="material-icons">filter_drama</i></div><div class="collapsible-body"><span><div class="chips" id="t1"></div><div class="chips" id="s1"></div><object style="width:100%;height:500px" id="url"  ></object></span></div></li>';
+$(temp2).find(".collapsible-header").append("{{this.data}}")
+{{#each this.details}}
+ $(temp2).find("{{this.type}}").append('<div class="chip">{{this.data}}</div>')
+ if("{{this.type}}"=="url")
+  $(temp2).find("object").attr("data",'{{{this.data}}}')
+{{/each}}
+$('#files').append(temp2.innerHTML);
+{{/each}}
+})
+  {{/if}}
+
+
+  navigator.permissions.query({name:'geolocation'}).then(function(result) {
+  if (result.state == 'granted') {
+
+
+  } else if (result.state == 'prompt') {
+
+
+  } else if (result.state == 'denied') {
+  //  alert("please turn on our navigation ");
+$('#tag').append("<h1>Location Service Unavailable</h1><br /><h4>please turn on the service</h4>")
+  }
+  result.onchange = function() {
+
+  }
+});
+
+  </script>
+
+  <style>
+    #map {
+     height: 100%;
+     width: 100%;
+    }
+ </style>
+<div id="map"></div>
+
+<script type="text/javascript">
+var host = window.location.protocol+"//"+"{{hst}}"+"/users/?usr={{tagath.username}}&tag="
+var host2=window.location.protocol+"//"+"{{hst}}"+"/users/?usr={{tagath.username}}%26tag="
+var tag = document.createElement('div');
+var usern="{{tagsout.username}}";
+var taginfo=0;
+var op2=[
+  {a:"loc",b:"location"},
+  {a:"din",b:"device info"},
+  {a:"clreq",b:"call request "},
+    ]
+
+    function tagk(vl) {
+      for (var i = 0; i < taginfo.length; i++) {
+        if(taginfo[i].name==vl)
+        return taginfo[i];
+      }
+      return 0;
+    }
+
+
+{{#if act}}
+//sdata = {data: "{{data}}", user: "{{usrid}}" ,usrnm: usern,from:"{{from}}" ,fromn: "{{Fromn}}" ,disc: "{{Disc}}" , to: "{{tocall}}" };
+var searchresult=0;
+{{#if info2}}
+$("#inside").append('<div id="tag" class="row"></div>');
+{{else}}
+$("#outside").append('<div id="tag" class="row"></div>');
+{{/if}}
+
+socket.emit('usrid', "{{tagsout._id}}");
+socket.emit('tagr',{id:"{{tagsout._id}}",username:"{{tagsout._id}}"});
+socket.emit('usrid', "{{tagsout.username}}");
+socket.on('search1r',function(data){
+  searchresult=data;
+  updatedivs(searchresult)
+})
+socket.on('directiontest',function(data){
+  console.log(data);
+})
+
+
+socket.on('tagt',function(data){
+taginfo=data;
+
+if(!tagk("{{act}}").type)
+{doing(tagk("{{act}}"));
+return 10;
+}
+else {
+  med1(tagk("{{act}}"));
+
+
+}
+  });
+  function sentfl(a) {
+    var id=a.split("#")[0]
+    b=JSON.stringify({data:a,type:"#s2",id:"1"})
+    sdata={data:"Emergency beacon has been summoned by "+"{{tagsout.name}} , data has been added to your database,search for whatever necessarly ",type:"msg",user:"{{tagsout._id}}",usrnm: usern,from:"{{tagsout.name}}",fromn: "{{tagsout.username}}", to:a.split("#")[1],avatar:selfprofpic }
+    socket.emit('msg', sdata);
+    $.post("/users/linkup",{pushall:b,id:"{{tagsout._id}}",type:"upload"});
+  }
+  function med1(tag)
+  {
+    var tempd=tag.data;
+    for (var i = 0; i < tempd.length; i++) {
+      if (tempd[i].type=="emco") {
+        sdata={data:"emergency msg",type:"msg",user:"{{tagsout._id}}",usrnm: usern,from:tag.from,fromn: tag.Fromn, to: tempd[i].data,avatar:selfprofpic };
+      socket.emit('msg', sdata);
+      }  else {
+       }
+       }
+
+       sentpos();
+    return tempd;
+  }
+  var flag=false;
+
+
+  function timer1(i,h=1000,g=1) {
+    $(".determinate").css("width",i+"%");
+    if(g<=0)
+    return "pagal he kya "
+    setTimeout(function(){
+      $(".determinate").css("width",i+"%");
+      if((i)<100&&!flag)
+      {timer1((i+g),h,g);
+      }
+      else {
+        console.log(h/1000+"seconds")
+        var a = $('.btn')
+        console.log(a.length+"  "+flag);
+        if(a.length>0&&!flag)
+        $(a[0]).click();
+      return "sab sahi ho gaya";
+      }
+    },h*g/100)
+
+}
+
+  function updatedivs(data) {
+    $('.s7').empty()
+    $('.s5').empty()
+console.log(data);
+      var origin=0
+    url="";  temp3="";count=1;id=0;temp1=0;
+    for (var i = 0; i < data.length; i++) {
+        if(data[i].type=="found")
+    {  temp1=data[i].details;
+        for (var j = 0; j < temp1.length; j++) {
+        if(temp1[j].type=="loc")
+    { if(!!(temp1[j].data.lat))
+      {url=returnmap(temp1[j].data.lat,temp1[j].data.long,"red",url,count);count++;
+        temp3+='<ul class="collapsible " data-collapsible="accordion" title="'+(count-1)+'"> <li> <div class="collapsible-header red white-text"><div style="float:left" >'+(count-1)+'</div><center>'+data[i].name+'</center></div><div class="collapsible-body"><span><div class="s12 " id="'+data[i].name+'"></div><div class=" s12"><button onClick="sentfl(this.id)" id="'+data[i]._id+"#"+data[i].username+'"class="btn red white-text">Alert this</button></div></span></div> </li></ul>'
+    id={a:data[i].name,b:temp1[j].data.lat,c:temp1[j].data.long};
+    posid(id.a,id.b,id.c)
+    }
+
+    }
+      }}
+      if(data[i].type=="not found")
+    {  temp1=data[i].result;
+
+    kick=0
+    if(temp1.length>6)
+     kick=6
+    else {
+     kick=temp1.length;
+    }
+    for (var j = 0; j < kick; j++) {
+      url=returnmap(temp1[j].geometry.location.lat,temp1[j].geometry.location.lng,"blue",url,count);count++;
+      temp3+='<ul class="collapsible " data-collapsible="accordion" title="'+(count-1)+'"> <li> <div class="collapsible-header blue white-text"><div style="float:left" >'+(count-1)+'</div><center>'+temp1[j].name+'</center></div><div class="collapsible-body"><span><div class="s12 " >'+temp1[j].vicinity+'</div></span></div> </li></ul>'
+
+    //  temp3+='<div title="'+(count-1)+'" class="s10 col card-panel hoverable blue waves-effect waves-light white-text"><div class="col blue black-text s12" >'+temp1[j].name+'</div><br /><div class="col s12">'+temp1[j].vicinity+'</div></div><br><br><br><br>'
+    }}
+      if(data[i].type=="location")
+      {url=returnmap((data[i].lat),(data[i].long),"green",url,"X");
+      origin={lat:data[i].lat,long:data[i].long}
+    }
+
+    }
+    $('#tag').empty();
+     $('#tag').append('<div class="col s12" ><div class="col s7"><image class="materialboxed" width="100%" heigth="100%"  src="'+url+'"  ></div><div class="col s5">'+temp3+'</div></div>')
+
+    $('.materialboxed').materialbox();
+     $('.collapsible').collapsible();
+     $('button').click(function(e){
+       flag=true;
+       alert("button clicked")
+     });
+    // timer1(0,15000,1)
+
+  }
+  function sentpos(s2="hospital",dist=10000){
+    navigator.geolocation.getCurrentPosition(function (data){
+
+socket.emit('search1',{lat:data.coords.latitude,long:data.coords.longitude,usr:"{{tagsout.username}}",dist:dist,search:s2});
+  })
+  }
+
+  function doing(data)
+  {var datas = data.data
+    if (!datas) {
+            return;
+    }
+    for (var i = 0; i <datas.length; i++)
+    {
+     if(datas[i].type=="msg")
+      {sdata={data:datas[i].data,type:"msg",user:"{{tagsout._id}}",usrnm: usern,from:data.from,fromn: data.Fromn, to: datas[i].tocall,avatar:selfprofpic }
+      socket.emit('msg',sdata);
+
+      }
+      else if(datas[i].type=="loc")
+    {
+          getpos(data.from,data.Fromn,datas[i].tocall);
+  }
+  else if(datas[i].type=="din")
+  {
+  sdata={data:cljs.getUserAgent(),type:"din",user:"{{tagsout._id}}",usrnm: usern,from:data.from,fromn: data.Fromn, to: datas[i].tocall,avatar:selfprofpic }
+ socket.emit('msg',sdata);
+  }
+  else if(datas[i].type=="clreq")
+  {
+  sdata={data:datas[i].data,type:"clreq",user:"{{tagsout._id}}",usrnm: usern,from:data.from,fromn: data.Fromn, to: datas[i].tocall,avatar:selfprofpic }
+  socket.emit('msg',sdata);
+  }
+  else if(datas[i].type==="rlink")
+  { tagrlink="";
+    tagrlink='<div><object style="object-fit: cover;" width="100%" height="630vh" data="'+datas[i].data+'" style="min-height: 100%;min-width: 100%;"></object></div>';
+    $('#tag').append(tagrlink);
+  }
+}
+
+
+  }
+function getpos(from,Fromn,to){
+
+navigator.geolocation.getCurrentPosition(function (data){
+  getp = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+data.coords.latitude+','+data.coords.longitude+'&key=AIzaSyDkH0dKcdQO_3flkGri9JA7vJAT2dWYM-8';
+  $.getJSON(getp,function(kal){
+      var mp=disp(data.coords.latitude,data.coords.longitude,"19",kal.results[0].formatted_address)
+
+      socket.emit('msg',{data:mp.htm,type:"loc",user:"{{tagsout._id}}",usrnm: usern,from:from,fromn:Fromn,disc:{lnk:mp.link,kl:kal.results[0].formatted_address}, to:to ,avatar:selfprofpic});//,kal:kal.results[0].formatted_address}
+  })
+})
+
+}
+function posid(id,lat,long){
+  getp = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&key=AIzaSyDkH0dKcdQO_3flkGri9JA7vJAT2dWYM-8';
+  $.getJSON(getp,function(kal){
+
+      $('#'+id).html(kal.results[0].formatted_address)
+    })
+}
+function disp(lat,long,zoom="18",meta)
+{
+var cen="https://maps.google.com/maps/api/staticmap?sensor=false&scale=2&size=1000x1000&maptype=terrain&markers=color:red|label:X|" + lat+ ',' + long+"&key=AIzaSyAgcoQAzFL_Mxvu8uiyQkBXHhLApfU6I-c";
+return {htm:'<image width="100%" class="materialboxed" data-caption="'+meta+'" src="'+cen+'"  ></image>',link:cen};
+
+}
+function returnmap(lat,long,color,url,lab)
+{
+  if(url=="")
+  return "https://maps.google.com/maps/api/staticmap?sensor=false&scale=2&size=1000x1000&maptype=terrain&key=AIzaSyAgcoQAzFL_Mxvu8uiyQkBXHhLApfU6I-c&markers=color:"+color+"|label:"+lab+"|" + lat+ ',' + long;
+else {
+  return url+"&markers=color:"+color+"|label:"+lab+"|" + lat+ ',' + long;
+}
+}
+{{/if}}
+{{#if tagath}}
+socket.emit('usrid', "{{user.username}}");
+socket.emit('tagr',{id:"{{user._id}}",username:"{{user.username}}"});
+socket.on('tagt',function(data){
+taginfo=data;
+tagcrdiv(taginfo);
+tagput(taginfo);
+fun1();
+  });
+
+  function tagcrdiv(taginfo){$('#tag').html("")
+    for (var i = 0; i < taginfo.length; i++) {
+      if(taginfo[i].type)
+      continue;
+    $("#tag").append('<button type="button" class="btn btn-pill btn-danger btn-block" data-toggle="collapse" data-parent="#accordion" data-target="#'+taginfo[i].name+'tag"><div class="container-fluid">'+taginfo[i].name+'</div></button></br><div id="'+taginfo[i].name+'tag" class="collapse collapsing"></br><div class="alert panel-body alert-info" ><center><font size="6">'+taginfo[i].name+'</font></center></br><center><img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=H&data='+host2+''+taginfo[i].name+'" ></center></br></br><center><a href="'+host+taginfo[i].name+'">'+host+taginfo[i].name+'</a></center></div></div>');
+    }
+  }
+  function tagput(taginfo){
+    for (var i = 0; i < taginfo.length; i++) {
+      for (var j = 0; j < taginfo[i].data.length; j++)
+        {if(taginfo[i].data[j].type=="msg")
+      $("#"+taginfo[i].name+"tag").append('<div class="container-fluid alert alert-danger ">'+findandupdatecheck(taginfo[i].name,taginfo[i].data[j].data,taginfo[i].data[j].tocall)+"<br />"+'data:  '+taginfo[i].data[j].data+'</br>type: '+taginfo[i].data[j].type+'<form method="get" action="/users/"><button type="submit" name="del" value="'+taginfo[i].data[j].oid+'" class="btn btn-default">Delete</button></form></div>')
+      if(taginfo[i].data[j].type=="rlink")
+      $("#"+taginfo[i].name+"tag").append('<div class="container-fluid alert alert-danger ">'+'data:  '+taginfo[i].data[j].data+"</br>"+'<center><object style="object-fit: cover;" width="90%" height="430vh" data="'+taginfo[i].data[j].data+'" style="margin-right: 0;top: 0 ; bottom: 0 ;margin-left: 0;margin-bottom: 0;margin-top: 0;"></object></center></br><form method="get" action="/users/"><button type="submit" name="del" value="'+taginfo[i].data[j].oid+'" class="btn btn-default">Delete</button></form></div>')
+      }
+    }
+
+  }
+
+    function findandupdatecheck(name,data,tocall){
+      temporaryvariable=document.createElement("div");
+      for (var i = 0; i < op2.length; i++) {
+            temporaryvariable.innerHTML+='<div class="col s3"><input type="checkbox" name='+op2[i].b+' disabled="disabled" class="form-check-input" id='+i+' value="'+op2[i].a+'">'
+      }
+          var a=tagk(name);
+          for (var i = 0; i < a.data.length; i++) {
+              if(a.data[i].data==data&&a.data[i].tocall==tocall&&a.data[i].type!=="msg")
+            {  $(temporaryvariable).find('input[type=checkbox][value='+a.data[i].type+']').attr( 'checked', 'checked' ).attr('class','filled-in already').attr('id',a.data[i].oid);
+
+            }
+
+              }
+
+      return temporaryvariable.innerHTML+"<br />";
+
+    }
+
+      function fun1() {
+        var a =$('#tag input[type=checkbox]');
+        for (var i = 0; i < a.length; i++) {
+          if(!$(a[i]).attr('checked'))
+          {$(a[i]).attr('id',i);
+                    }
+                      $(a[i]).after('<label class="red-text" for="'+i+'" >'+a[i].name+'</label></div>');
+        }
+        return a;
+      }
+
+
+document.getElementById('tag').appendChild(tag);
+{{/if}}
+
+  </script>

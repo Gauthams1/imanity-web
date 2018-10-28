@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+   /*::-webkit-scrollbar {
+    width: 0px;
+  }*/
+  html {
+  font-family: GillSans, Calibri, Trebuchet, sans-serif;
+}
+  body[style] {
+   background-attachment: fixed  !important;
+   background-size:  cover !important;
+   min-height: 100%;
+}
+li a{
+  color:#000 !important;
+}
+center strong {
+  color:#000;
+}
+.dropdown-content  li{
+  /*height:40px !important;*/
+  min-height:20px !important;
+}
+#dropdown1{
+  top:90% !important;
+  width:200px !important;
+  background: rgba(255,255,255, 0.2) !important;
+}
+.tabs-content.carousel{
+  height: 70vh !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+}
+.mom{
+  overflow-x: hidden !important;
+  height:100% !important;
+}
+h6{
+  margin:0px !important;
+}
+
+/*.s12::-webkit-scrollbar {
+    width: 12px;
+}*/
+
+</style>
+  <title>Imanity</title>
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="/js/jquery-3.2.1.min.js"></script>
+  <script src="/js/client.js"></script>
+  <link rel="stylesheet" href="/css/bootstrap.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/materialize.min.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/css/style1.css" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/images/prj57-48x48.png">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+ <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBFzXEGPlruWvL56H9dIMsCKTBnHfSA0uM",
+    authDomain: "prj57-ede89.firebaseapp.com",
+    databaseURL: "https://prj57-ede89.firebaseio.com",
+    projectId: "prj57-ede89",
+    storageBucket: "prj57-ede89.appspot.com",
+    messagingSenderId: "789128893570"
+  };
+  firebase.initializeApp(config);
+ </script>
+
+    <script>
+    usrname = "{{user.username}}";
+    usname = "{{user.name}}";
+    var cljs=0;
+  //  var socket = io.connect('https://imanity.herokuapp.com/');
+  var selfprofpic="https://cdn2.lobster.media/assets/default_avatar-afa14913913cc117c73f1ac69496d74e.png"
+    var socket = io.connect();
+    var profpic = 0;
+    var us = 10;
+    var messagedata = 0;
+    screen.orientation.lock('landscape').then(function() {}).catch(function() {})
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+
+    function userid() {
+      socket.emit('usrid', "{{user.username}}");
+      socket.emit('laymsgt', "{{user._id}}");
+    }
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    socket.on('msg-usr', function(data) {
+      console.log(data);
+      message = '<div class="well " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;" ><abbr title="' + data.crtd +
+        '"><font style="font-size:0.8em" ><a ><img src="https://cdn2.lobster.media/assets/default_avatar-afa14913913cc117c73f1ac69496d74e.png" class=" img-circle ' + data.duname +
+        '"style="max-width:2.4vw;max-height:2.4vw""></a>: ' + data.data + '</font></abbr></div>' ;
+    $('#msg').prepend(message);
+
+    $(msg).empty();
+      ppic();
+    });
+    socket.on('laymsgr', function(data) {
+      us = data.us;
+      $('#friend').find('option').remove().end();
+      profpic = data.us1;
+      for (i = 0; i < us.length; i++) {
+        sentuser = document.getElementById(us[i].type);
+        if (us[i].type == "friend")
+          sentuser.innerHTML += '<option value="' + us[i].data + '" class="' + us[i].data + '">' + us[i].data + '</option>';
+        if (us[i].type == "propic");
+        //  $('#propic').attr('src', us[i].data);
+      }
+      ppic();
+      msgdivrecreq();
+      setTimeout(function(){$('select').material_select();$('.materialboxed').materialbox(); $('.tabs').tabs({swipeable:true});},0)
+    });
+    userid();
+    function ppic() {
+     //console.log(profpic);
+      if(!profpic)
+      return 0;
+      for (var i = 0; i < profpic.length; i++) {
+        if (profpic[i].data.length > 0)
+          $('.' + profpic[i].Disc + '').each(function() {
+            $(this).attr("src", profpic[i].data);
+          })
+        else
+          $('.' + profpic[i].Disc + '').each(function() {
+          //  $(this).attr("src", "https://cdn2.lobster.media/assets/default_avatar-afa14913913cc117c73f1ac69496d74e.png");
+          })
+      }
+    }
+    function a1(image, def) {
+      image.src = def
+    }
+    function msgdivrecreq() {
+      var uer = document.getElementById('friend').value;
+      $('#msg').empty();
+
+      socket.emit('msgviewcurrn', {
+        fm: uer,
+        to: "{{user.username}}"
+      });msg="";
+      for (i = 0; i < messagedata.length; i++) {
+        if (((uer == messagedata[i].Fromn) && ("{{user.username}}" == messagedata[i].to)) || ((uer == messagedata[i].to) && ("{{user.username}}" == messagedata[i].Fromn))) {
+          if (messagedata[i].from == "{{user.name}}") {
+            msg = '<div class="well alert alert-info " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;text-align:right;" ><abbr title="' + messagedata[i].crtd + '"> </abbr><font style="font-size:0.8em" >' +
+              messagedata[i].data + '</font></div>' + msg;
+          } else {
+            msg = '<div class="well alert alert-danger " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;" ><font style="font-size:0.8em" ><abbr title="' + messagedata[i].crtd + '"> <a ><img  class=" img-circle ' +
+              " " + messagedata[i].Fromn + '" alt="' + messagedata[i].Fromn +
+              '" src="https://cdn2.lobster.media/assets/default_avatar-afa14913913cc117c73f1ac69496d74e.png" style="width:2.4vw;height:2.4vw;margin:0%;""></abbr></a>  ' + messagedata[i].data + '</font></div>' + msg;
+          }
+        }
+      }  $("#msg div").empty();
+      $('#msg').prepend(msg);
+    //  $(msg).empty();
+
+      ppic();
+    }
+    function changeBackground() {
+      bgCounter = getRandomInt(0, 6);
+      $('body').css('transition', 'background 2s ease');
+      $('body').css('background', '#eee ');
+      setTimeout(changeBackground, 100000);
+    }
+    $(document).ready(function() {
+          cljs = new ClientJS();
+          $(".afterload").delay(100).fadeIn("fast");
+          $('#propic').css("width", "12vw");
+          $('#propic').css("height", "12vw");
+          $('#propic').css("border-radius", "100%");
+          $("#sbar").css("left", "0px");
+          $('#rbar').css("right", "-0px");
+          $('.dropdown-button').dropdown({
+     inDuration: 300,
+     outDuration: 225,
+     constrainWidth: false, // Does not change width of dropdown to that of the activator
+     hover: true, // Activate on hover
+     gutter: 0, // Spacing from edge
+     belowOrigin: false, // Displays dropdown below the button
+     alignment: 'left', // Displays dropdown with edge aligned to the left of button
+     stopPropagation: false // Stops event propagation
+   }
+ );
+ $("#propic").attr("src","https://cdn2.lobster.media/assets/default_avatar-afa14913913cc117c73f1ac69496d74e.png");
+ {{#each user.details}}
+ if("{{this.id}}"=="profpic"){
+ $("#propic").attr("src","{{this.data}}");
+ selfprofpic="{{this.data}}";
+ }
+ {{/each}}
+
+
+
+            {  if (!Notification) {
+            alert('Desktop notifications not available in your browser. Try Chromium.');
+            return;
+          }
+          if (Notification.permission !== "granted")
+            Notification.requestPermission();
+        }
+        $('.modal').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .5, // Opacity of modal background
+            inDuration: 300, // Transition in duration
+            outDuration: 200, // Transition out duration
+            startingTop: '0%', // Starting top style attribute
+            endingTop: '0%', // Ending top style attribute
+            ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+            $(modal).find('#contex1').empty().append('<div class="row"><div class="s2 col"></div><div class="s8 col"><'+$(trigger).children().prop('nodeName')+' src="'+$(trigger).children().prop('src')+'" width="100%" /></div><div class="s2 col"></div></div>')
+            $(modal).find("#chmod").click(function(){
+              socket.emit('link1',{data:$(modal).find("#recipient-name")[0].value,type:"propic",usrid:"{{user._id}}",username:"{{user.username}}"});
+              $(trigger).find("#propic").attr("src",$(modal).find("#recipient-name")[0].value);
+              $(modal).modal('close');
+              $.post('/users/detailup',{data:JSON.stringify({data:$(modal).find("#recipient-name")[0].value,type:"profpic",id:"profpic"})})
+            })
+            $(modal).find('#close').click(function(){$(modal).modal('close');})
+            }
+
+          }
+        );
+
+          changeBackground();
+              $('#friend').change(function() {
+              $("#msg div").empty();
+              socket.emit('usermsg', {
+                id: "{{user._id}}",
+                username: "{{user.username}}"
+              });
+
+              msgdivrecreq();
+            });
+            $('#data1').keypress(function(e) {
+
+              if (e.keyCode == 13) {
+                var data = document.getElementById('data1').value;
+                var to = document.getElementById('friend').value;
+                var user_id = "{{user._id}}";
+                var usern = "{{user.name}}";
+
+                sdata = {
+                  data: data,
+                  user: user_id,
+                  usrnm: usern,
+                  fromn: "{{user.username}}",
+                  to: to,
+                  from: usern,
+                  avatar:selfprofpic
+                };
+                socket.emit('msg', sdata);
+                msg = '<div class="well alert alert-info " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;text-align:right;" ><font size="-2" >' + sdata.data + '</font></div>';
+                $('#msg').prepend(msg);
+                $('#data1').val('');
+              }
+            });
+            socket.emit('usermsg', {
+              id: "{{user._id}}",
+              username: "{{user.username}}"
+            });
+            socket.on('usermsgr', function(data) {
+              messagedata = data.u1;
+              unread = data.u2;
+              $("#mesnmbr").html(unread.length);
+              for (var i = 0; i < unread.length; i++) {
+                $('#msgdropdown').append('<div style="display:block;" ><div class="container-fluid" style="float:left"><img style="height:3vw;width:3vw;border-radius:100%" class="'+unread[i].Fromn+'"></div><div  style="">'+unread[i].from+":    "+unread[i].data+'</div><div>')
+              }
+              if (unread.length) {
+                $('.mesnm').css("color", "#00FFFF")
+              } else {
+                $('.mesnm').css("color", "unset")
+              }
+
+            });
+
+            if("serviceWorker" in navigator ){navigator.serviceWorker.register("/sw.js",{scope:"/"}).then(function(reg){}).catch(function(err){})}
+                navigator.serviceWorker.ready.then(function(reg) {
+                  reg.pushManager.getSubscription().then(function(subscription) {
+                    if (subscription !== null&&("{{user.username}}" == "")) {
+                      subscription.unsubscribe().then(function(successful) {
+                        console.log("unsubscribe");
+                        socket.emit("gcmtestunsub", subscription);
+                      }).catch(function(e) {
+                      })
+                      }
+                    else if("{{user.username}}"!==""&&subscription==null) {
+                     return reg.pushManager.subscribe({
+                          userVisibleOnly: true,
+                          applicationServerKey: new urlBase64ToUint8Array("BDZTGzgyvbNav5NOqJR6XXKHd7XqWTjg0vFRFQKbS-aJsEbO7ArWegYDNsaRvOf3MTEMruOLD0pui5R-KOEsMj8")
+                      })
+                          .then(function(subscription) {
+                            var fingerprint = cljs.getCustomFingerprint();
+                            console.log("registered");
+                            return socket.emit("gcmtest",{data:{uname:"{{user.username}}",id:(window.screen.availWidth+window.screen.availHeight)+""+fingerprint},subobj:subscription});
+                          })
+                    }
+                  })
+                });
+
+
+        });
+    window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')
+
+  </script>
+
+</head>
+
+<body class="desp html-mobile-background" >
+
+<div class="afterload" style="display:none" >
+
+    <title>Prj57</title>
+
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color:rgba(20,20,20, 0.05);border:0" >
+      <div class="container-fluid visible-phone" style="border:0;border-radius:100%">
+        <div class="navbar-header" style="border:0;background-color:rgba(100,100,100,0.1)">
+            <a href="/"><img src="/images/prj57-48x48.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse" style="border:0">
+
+          <ul class="nav navbar-nav navbar-right">
+            <li role="presentation"><a href="/">Home</a></li>
+
+          <li role="presentation">
+            <a class='dropdown-button waves-effect waves-block waves-light notification-button' href='#' data-activates='dropdown1'><div class="material-icons large " style=""  >account_circle</div></a>
+              <ul id='dropdown1' class='dropdown-content black-text' style="top: 110px;">
+                <li><a href="/users/setting" class="blue-grey-text"><i class="material-icons">settings</i> Settings</a></li>
+                <li><a href="/users/interaction" class="blue-grey-text"><i class="material-icons">description</i> interactions</a></li>
+                <li><a href="/users/logout" class="blue-grey-text"><i class="material-icons">power_settings_new</i>logout</a></li>
+
+              </ul>
+</li>
+          </ul>
+          <form method="post" action="/users/search" class="navbar-form navbar-right">
+            <div class="form-group has-feedback">
+              <input type="text" class="form-control" name="search" placeholder="Search...">
+              <i class="pull-right glyphicon glyphicon-search form-control-feedback "></i>
+            </div>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid bg-inverse visible-phone row">
+
+        <div class="col m3 s3 sidebar" id="sbar" style="overflow: hidden;width:0%;box-sizing:padding: 1em;min-width: min-content;margin-right:auto;background-color:rgba(0, 0, 0, 0.0);border:0">
+          <div class="profpicdiv" style="display:block;">
+          <center> <a class="modal-trigger" href="#modal1" >
+
+						<img id="propic" name="profile picture"  style="margin-left: 0; margin-right: 0;position: static;" >
+					</a></center></div>
+          <center><strong><font size="3" >{{user.name}}</font></strong></center>
+          <ul class="nav nav-sidebar">
+            <li><a href="/users/tag">  Tags<i class="hidden-xs showopacity menu-icon pull-right glyphicon glyphicon-tag" ></i>  </a></li>
+            <li><a href="/users/">  View Tags<span class="pull-right glyphicon glyphicon-tags" ></span></a></li>
+            <li><a href="/users/smsg">  Messages<span class="pull-right glyphicon glyphicon-envelope" ></span></span></a></li>
+          </ul>
+        </div>
+        <div class="container main " id="bdy">
+          <div style=" height:auto;background-color: rgba(255,255,255,0.7);width:94%;border-radius: 5px;padding: 13px;margin-left:10px;left:16%">
+            <div class="" style="margin-left: 10px;">
+              {{{body}}}
+            </div>
+          </div>
+        </div>
+
+    <div class="col s3 m5 pull-right sidebar affix" id="rbar" style="position: fixed;right: 0px;height:100%;width:17%; background-color: rgba(0, 0,0, 0.1);border-style:none;padding:0px">
+      <div class="row collapse navbar-collapse" style="overflow: hidden">
+        <div id="msg" class="well" style="overflow-y: scroll;margin-left:0px;margin-right:0px; height:50vh;width:100%;right: 0px;"></div>
+        <div class="input-field col s12">
+          <select  id="friend" style="margin-top: 17px">
+  							 </select>
+                 <label for="friend">Friend</label>
+
+        </div>
+                <div class="form-group" style="margin-top:10px">
+          <textarea class="form-control" name="data" rows="6" cols="50" id="data1"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+  <div id="modal1" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <div class="col s12" id="contex1"></div>
+    <div class="col s12">  <label for="recipient-name" class="form-control-label">Link</label>
+      <input type="text" class="form-control" id="recipient-name">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" id="close" >Close</button>
+    <button type="button" id="chmod" class="btn btn-primary">Change</button>
+  </div>
+</div>
+
+
+</div>
+
+</body>
+<script type="text/javascript">
+
+</script>
+</html>

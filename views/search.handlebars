@@ -1,0 +1,26 @@
+<h3 class="page-header">Search</h3>
+<div id="result"></div>
+<script type="text/javascript">
+  var tag = document.createElement('div');
+  {{#each us}}
+  tag.innerHTML +='<div class="container-fluid alert alert-info"><div class="alert alert-danger" style="white-space: nowrap;"><div style="display: block;margin-right:0px;overflow: auto;" ><img   name="profile picture" class="{{username}} pop " style="float:left;margin:0;position: static;" src="http://3.bp.blogspot.com/-ZbBGvRYSbpA/T8DKT8UxucI/AAAAAAAAD0M/Bh32CCkGu_s/s1600/wallpaper-1925565.jpg"><div style="margin-left:20vw;margin-top:2vw">Name : {{name}}</br>E-mail: {{email}}</br></div></div><form method="post" action="/users/link"><button name="frnd" class="btn btn-default" value="{{username}}" >friend user {{name}}</button></form></div></div>';
+
+  {{/each}}
+
+  document.getElementById('result').appendChild(tag);
+  $('.pop').css("width","15vw");
+  $('.pop').css("height","15vw");
+  $('.pop').css("border-radius","100%");
+  {{#each pp}}
+    $('.'+"{{Disc}}"+'').each(function(){$(this).attr("src","{{data}}");});
+{{/each}}
+
+socket.on('laymsgr',function(data){
+  us=data.us;
+  profpic=data.us1;
+for(i=0;i<us.length;i++){
+    if(us[i].type=="friend");
+  }});
+
+
+</script>

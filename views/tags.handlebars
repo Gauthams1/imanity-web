@@ -1,0 +1,237 @@
+
+{{#if errors}}
+{{#each errors}}
+<div class="alert alert-danger">{{msg}}</div>
+{{/each}}
+{{/if}}
+
+
+
+<div class="alert row">
+  <div class="alert alert-info row">
+
+  </br>
+    <div class="col s4">
+      <label for="Name">Name</label>
+    <input list="Name"  id="name" name="name">
+    <datalist id="Name">
+      </datalist>
+    </div>
+    <div class="col s10">
+      <label for="link">Link</label>
+      <input list="Name" class="form-control" id="link">
+    </div>
+    <div id="check">
+      </div>
+    </div>
+
+    <div id="addit">
+
+    </div>
+ <button type="button" class="btn  btn-block" id="b2">&dArr;</button><br>
+    <button type="button" class="btn waves-effect waves-light red" id="b1">
+      Submit
+    </button>
+
+    <div id="dd">
+
+    </div>
+
+
+
+
+
+
+  </div>
+
+  <script type="text/javascript">
+  var host = window.location.protocol+"//"+ window.location.host+"/users/?usr={{user.username}}&tag="
+  var host2=window.location.protocol+"//"+ window.location.host+"/users/?usr={{user.username}}%26tag="
+  taginfo=0;
+  var op1=[
+    {a:"msg",b:"message"},
+    {a:"emer",b:"broadcast"},
+  ]
+  var op2=[
+    {a:"loc",b:"location"},
+    {a:"din",b:"device info"},
+    {a:"clreq",b:"call request "},
+      ]
+
+
+  var tag = document.createElement('div');
+  socket.emit('tagr',{id:"{{user._id}}",username:"{{user.username}}"});
+  socket.on('tagt',function(data){
+   taginfo=data;
+   console.log(taginfo);
+   tagkeeping();
+
+    });
+
+  function getvalue() {
+      var temp=[];
+      $("#addit .form-check-input").each(function(event){
+      var par=$($(this).parent().parent()[0]).find(".data")[0].value||false;
+      var cal=$($(this).parent().parent()[0]).find(".tocall")[0].value||false;
+        if(this.checked&&par)
+        {temp.push(this.value);
+      //    console.log(par+" "+"  "+this.value);
+          console.log({name:document.getElementById("name").value,type:this.value,data:par,tocall:cal});
+         $.post("/users/tag",{name:document.getElementById("name").value,type:this.value,data:par,tocall:cal});
+        }
+        else {
+          if(this.id!="null")
+        { //$.getJSON('/users/?del='+this.id,function(data){console.log(this.id)})
+        console.log(this.id)
+        }
+      }
+      })
+
+      $("#dd .form-check-input").each(function(event){
+
+        if(!this.checked&&this.id!="null")
+        {
+        //  $.get("/users/", {del:this.id});
+          console.log(this);}
+      })
+      console.log(temp);
+  //  location.reload()
+    }
+
+
+  function addingchk(va) {
+      var temp="";
+      for (var i = 0; i < op2.length; i++) {
+      temp+='<input type="checkbox" class="form-check-input" id="'+va+i+'" value="'+op2[i].a+'"> <label class="red-text" for="'+va+i+'" >'+op2[i].b+'</label>'
+      }
+        return temp
+      }
+
+  $("#b1").click(function(){
+      console.log("submittion")
+      pname=document.getElementById("name").value;
+      data1={name:pname,type:"rlink",data:document.getElementById("link").value};
+      if(data1.data != "")
+      {console.log(data1);
+      $.post("/users/tag",data1);}
+      console.log(document.getElementsByClassName("forsel").length);
+      pclas=document.getElementsByClassName("forsel");
+      for (var i = 0; i < pclas.length; i++) {
+        testa1={name:pname,type:pclas[i].getElementsByClassName("type")[0].value,data:pclas[i].getElementsByClassName("data")[0].value,tocall:pclas[i].getElementsByClassName("tocall")[0].value}
+        if(testa1.data!="")
+        {$.post("/users/tag",testa1);
+        console.log(testa1);}
+      }
+      getvalue();
+      location.reload();
+      })
+
+  $("#b2").click(function(){var tag1=document.createElement("div");
+        tag1.innerHTML='<div class="forsel alert alert-info row"><button type="button" class="close cld" onClick="closediv(this)" aria-label="Close"> <span aria-hidden="true">&times;</span></button><div class="form-group "><label>Type</label></br><select name="type" id="type" class="btn type btn-primary active" value="1">hello</select></div>'+'<div class="form-group"><label>Data</label><textarea class="text data form-control" name="data" placeholder="Data"></textarea></div><div class="form-group"><label>Tocall user</label></br><select class="tocall btn type btn-primary active "  name="tocall" >  {{#each usrknn}} <option value="{{username}}">{{name}}</option>{{/each}}</select></div>';
+        $(tag1).find("#type").append(addselect(op1));
+          $(tag1).find("#type").append(addingchk($('.forsel').length));
+
+        $('.close').bind("click")
+      $('#addit').append(tag1.innerHTML);
+
+        })
+
+  function addselect(data) {
+          var temp="";for (var i = 0; i < data.length; i++) {
+            temp+= '<option value="'+data[i].a+'">'+data[i].b+'</option>'
+          }return temp;
+        }
+
+  function closediv(val) {
+          $(val).parent().remove()
+        }
+
+  function tagkeeping(){
+      tagv=tagk()
+
+      if(!(tagv.data))
+      return "none found";
+      for (var i = 0; i < tagv.data.length; i++) {
+      console.log(tagv.data[i]);
+      if(tagv.data[i].type=="rlink")
+      {console.log(tagv.data[i].data);
+        tag1+='<div class="container-fluid alert alert-danger "><object style="object-fit: cover;" width="100%" height="630vh" data="'+tagv.data[i].data+'" style="margin-right: 0;top: 0 ; bottom: 0 ;margin-left: 0;margin-bottom: 0;margin-top: 0;"></object><form method="get" action="/users/"><button type="submit" name="del" value="'+tagv._id+'" class="btn btn-default">Delete</button></form></div>';
+        $('#link').attr("placeholder",tagv.data[i].data)
+
+      }
+          if(tagv.data[i].type=="msg")
+      { console.log("msg");
+         tag1+='<div class="alert dispmsg alert-danger" style="white-space: nowrap;"><div class="col s12">'+findandupdatecheck(tagv.name,tagv.data[i].data,tagv.data[i].tocall)+'</div><br><br><div ><div="container-fluid">'+'data:  '+tagv.data[i].data+'</br>type: '+tagv.data[i].type+'</br>to:'+tagv.data[i].tocall+'</div><form method="get" action="/users/"><button type="submit" name="del" value="'+tagv.data[i].oid+'" class="btn btn-default">Delete</button></form></div>';
+
+      }
+
+      }
+
+   inpval=document.getElementById("name");
+
+
+
+    if(tag1!=="")
+    {document.getElementById('dd').innerHTML='</br><div class="alert alert-info" ><center><font size="6">'+inpval.value+'</font></center></br><center><img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=H&data='+host2+''+inpval.value+'" ></center></br></br><center><a href="'+host+inpval.value+'">'+host+inpval.value+'</a></center></div>'+tag1;
+    return "";
+    }
+
+    $("#link").attr("placeholder","insert your link......");
+    document.getElementById('dd').innerHTML="";
+    return "";
+    }
+
+    function tagk() {
+      tag1="";//
+      inpval=document.getElementById("name").value;
+      for (var i = 0; i < taginfo.length; i++) {
+        if(taginfo[i].name==inpval)
+        return taginfo[i];
+      }
+      return 0;
+
+    }
+
+    function findandupdatecheck(name,data,tocall){
+      temporaryvariable=document.createElement("div");
+      for (var i = 0; i < op2.length; i++) {
+            temporaryvariable.innerHTML+='<div class="col s3"><input type="checkbox" name='+op2[i].b+' value="'+op2[i].a+'">'
+      }
+      var a=tagk();
+      for (var i = 0; i < a.data.length; i++) {
+          if(a.data[i].data==data&&a.data[i].tocall==tocall&&a.data[i].type!=="msg")
+        {  $(temporaryvariable).find('input[type=checkbox][value='+a.data[i].type+']').attr( 'checked', 'checked' ).attr('class','filled-in already').attr('id',a.data[i].oid);
+        console.log(a.data[i]);
+        }
+
+          }
+  temporaryvariable.innerHTML+="<br />"
+      return temporaryvariable.innerHTML;
+
+    }
+    function fun1() {
+      var a =$('#dd input[type=checkbox]');
+      for (var i = 0; i < a.length; i++) {
+        if(!$(a[i]).attr('checked'))
+        {$(a[i]).attr('id',i).attr('class','filled-in');
+        $(a[i]).after('<label class="red-text" for="'+i+'" >'+a[i].name+'</label></div>');
+                  }
+                  else {
+                    $(a[i]).after('<label class="red-text" for="'+a[i].id+'" >'+a[i].name+'</label></div>');
+                  }
+
+      }
+      return a;
+    }
+  $(document).ready(function(){
+
+    $("input[name~='name']").keyup(function(){
+      tagkeeping();
+      console.log("processing.....");
+      fun1();
+    });
+
+
+  })
+
+  </script>

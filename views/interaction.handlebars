@@ -1,0 +1,231 @@
+<span>
+<div class="col s12"><ul id="tabs-swipe-demo" class="tabs tabs-fixed-width">
+  <li class="tab col s3 tooltipped" data-position="top" data-tooltip="Personal details"><a href="#ts1"><i class="material-icons" >account_circle</i></a></li>
+  <li class="tab col s3 tooltipped" data-position="top" data-tooltip="History"><a href="#ts2"><i class="material-icons" >history</i>  </a></li>
+  <li class="tab col s3 tooltipped" data-position="top" data-tooltip=" Upload"><a href="#ts3"><i class="material-icons" >cloud_upload</i></a></li>
+  <li class="tab col s3 tooltipped" data-position="top" data-tooltip=" Shared"><a href="#ts4"><i class="material-icons" >cached</i></a></li>
+  </ul></div>
+<div id="ts1" class="col mom s12">
+<!-- div.col.s12>(div.col.s12>div.col.s2+div.col.s8+div.col.s2)*5 -->
+<div class="col s12 m12">
+  <h3 class="header">{{user.name}}</h3>
+  <div class="card horizontal">
+    <div class="card-image">
+      <img id="{{user.username}}">
+    </div>
+    <div class="card-stacked">
+      <div class="card-content s12" style="float:right">
+        <p><b>Username</b> : {{user.username}}</p>
+        <p><b>Email</b> : {{user.email}}</p>
+        <p><b>Phone no:</b> {{user.ph}}</p>
+        <p><div id="med" class="col s12"></div></p>
+      </div>
+      <div class="card-action">
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="ts2" class="col mom s12">
+  <h6>search</h6>
+  <div class="chips chips-autocomplete chips-initial" id="searchhis"></div>
+  <button class="btn" id="serinthis">Search for tags</button>
+  <ul id="historyres" class="collapsible" data-collapsible="accordion" ></ul>
+</div>
+
+<div id="ts3" class="col mom s12">
+  <div class="input-field col s12">
+      <h6>Shared with</h6>
+  <div class="chips chips-autocomplete chips-initial" id="sh1"></div>
+</div>
+<div class="input-field col s12">
+    <h6>Personal tags</h6>
+<div class="chips chips-autocomplete chips-initial" id="t1"></div>
+<div class="col s12" style="padding-left:0px">
+  <div class="col s12" style="padding-left:0px">
+  <div class="file-field input-field">
+        <div class="btn">
+          <span>Select File</span>
+          <input type="file" id="up1">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+      </div></div>
+    <br><br><br><br><br><br>
+      <div class="col s12"><center><button class="btn" id="b3">Submit</button></center></div><br><br><br>
+  <div class="col s12" id="pr1"><div class="col s3"></div>   <div class="progress col s6">
+     <div class="determinate" id="progup" style="width:0%"></div>
+      </div><div class="col s3"></div></div>
+        <div class="col s12">
+
+          <ul class="collapsible " data-collapsible="accordion" id="in">
+
+          </ul>
+        </div>
+
+  </div>
+</div>
+</div>
+<div id="ts4" class="col s12">
+  <ul class="collapsible " data-collapsible="accordion" id="shared1">
+
+  </ul>
+</div></span>
+<script type="text/javascript">
+var host = window.location.protocol+"//"+ window.location.host+"/users/?usr={{user.username}}&tag="
+var host2=window.location.protocol+"//"+ window.location.host+"/users/?usr={{user.username}}%26tag=med";
+$('#ts1 #med').append('  <center><img onClick="prin(this)" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&ecc=H&data='+host2+'med" ></center><br /><center><a href="'+host+'med" >medical</a></center>')
+function prin(a){
+
+  popup = window.open(a);
+popup.document.write('<img src="'+a.src+'" onLoad="window.print()">');
+popup.focus(); //required for IE
+
+
+}
+socket.emit('linktypet',{id:"{{user._id}}",usr:"{{user.username}}"});
+socket.emit('sharint',{usn:"{{user.username}}"});
+socket.on('searchinteraction',function(data){
+
+  temp1=data;
+  for (var i = 0; i < temp1.length; i++) {
+    temp2=temp1[i].details;
+    var tempser = document.createElement("li")
+      $(tempser).html('<div class="collapsible-header"><i class="material-icons">filter_drama</i>'+temp1[i].data+'</div> <div class="collapsible-body"><span><h7>tags</h7><div id="t1" class="chips"></div><div id="usrname" class="chips"></div><object width="100%" height="350vh" id="url"></object></span></div>')
+    for (var j = 0; j < temp2.length; j++) {
+      detailtemp=temp2[j];
+      if(detailtemp.type=="url")
+      $(tempser).find("object").attr("data",detailtemp.data)
+      if(detailtemp.type=="usrname")
+      $(tempser).find("#usrname").append('<div class="chip">'+detailtemp.data.name+' </div>')
+      else {
+        $(tempser).find(detailtemp.type).append('<div class="chip red white-text">'+detailtemp.data+' </div>')
+      }
+    }
+$("#historyres").append('<li>'+$(tempser).html()+'</li>');
+  }
+})
+socket.on('shareinter',function(data){
+
+  var tempd=data;
+  console.log(data);
+  for (var i = 0; i < tempd.length; i++) {temp3="";
+    temp3='<li> <div class="collapsible-header" title=" '+new Date(tempd[i].time)+'"><i class="material-icons">folder</i>'+tempd[i].data+'</div> <div class="collapsible-body"><div class="chips" id="name1"></div><object class="materialboxed" width="100%" height="350vh" > </object> </div> </li>'
+    temp1=$.parseHTML(temp3)
+    temp2=tempd[i].details;
+    console.log(tempd[i]);
+    for (var j = 0; j < temp2.length; j++) {
+    if(temp2[j].type=="url")
+    $(temp1).find("object").attr('data',temp2[j].data) ;
+    else if (temp2[j].type=="usrname") {
+        $(temp1).find('#name1').append('<div class="chip cyan accent-1 black-text">'+temp2[j].data.name+' </div>');
+    }
+    }
+    $("#shared1").append('<li>'+$(temp1).html()+'<li>');
+
+}
+})
+function deletefl(e,a,r) {
+    $(e).parent().parent().parent().remove()
+
+   var storageRef = firebase.storage().ref('/{{user._id}}/'+a).delete().then(function() {}).catch(function(error) {});
+   $.post('/users/linkup',{del:r});
+   setTimeout(function () {
+     $("#shared1").empty()
+       socket.emit('sharint',{usn:"{{user.username}}"});
+   }, 10);
+
+}
+$("#serinthis").click(function(){
+  $("#historyres").empty();
+    a=$('#searchhis').data().chips;
+    temp1=[]
+    for (var i = 0; i < a.length; i++) {
+      temp1.push(a[i].tag)
+    }
+
+    socket.emit('searchinteractiont',{id:"{{user._id}}",user:"{{user.username}}",query:JSON.stringify(temp1) })
+})
+socket.on('linktype',function(data){
+
+  var temp1=data
+  for (var i = 0; i < temp1.length; i++) {
+    $('#in').append('<li> <div class="collapsible-header"title="'+new Date( parseInt(temp1[0]._id.toString().substring(0,8), 16 ) * 1000 )+'"><i class="material-icons">folder</i>'+temp1[i].data+'  <button class="btn-flat  right"><i onClick="deletefl(this,\''+temp1[i].data+'\',\''+temp1[i]._id+'\')" class="close material-icons">close</i></button></div> <div class="collapsible-body"> <div class="chips chips-autocomplete chips-initial" id="sh1'+temp1[i]._id+'"></div> <div class="chips chips-autocomplete chips-initial" id="t1'+temp1[i]._id+'"></div> <object id="url'+temp1[i]._id+'" width="100%" height="350vh" > </object> </div> </li>')
+    var temp2=temp1[i].details
+    for (var j = 0; j < temp2.length; j++) {
+      if(temp2[j].type=="url")
+      $("#"+temp2[j].type+""+temp1[i]._id).attr("data",temp2[j].data);
+        else {
+        $(temp2[j].type+""+temp1[i]._id).append('<div class="chip ">'+temp2[j].data+' <i class="close material-icons">close</i> </div>');
+      }
+
+    }
+  }
+})
+function upload(data,add){
+    var storageRef = firebase.storage().ref('/{{user._id}}/'+data.name).put(data);
+    storageRef.on('state_changed', function(snapshot){
+      $(".progress").show();
+    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    $("#progup").css('width',progress+"%")
+
+    switch (snapshot.state) {
+      case firebase.storage.TaskState.PAUSED: // or 'paused'
+
+          break;
+      case firebase.storage.TaskState.RUNNING: // or 'running'
+
+          break;
+        }
+      }, function(error) {
+  // Handle unsuccessful uploads
+      }, function() {
+  var downloadURL = storageRef.snapshot.downloadURL;
+  add.push({data:downloadURL,id:1,type:"url"})
+    add.push({data:{name:"{{user.name}}",username:"{{user.username}}",id:"{{user._id}}"},id:1,type:"usrname"})
+    $("#pr1").delay(1000).fadeOut("slow");
+    $.post("/users/linkup",{data:JSON.stringify(add),name:data.name,type:"upload"});
+    setTimeout(function () {
+      $("#progup").css("width","0%");
+    //  location.reload();
+    $("#shared1").empty()
+    $('#in').empty()
+    socket.emit('linktypet',{id:"{{user._id}}",usr:"{{user.username}}"});
+    socket.emit('sharint',{usn:"{{user.username}}"});
+    }, 1500);
+    });
+      }
+      $('#b3').click(function(){
+        var temp1=$('#up1')[0].files;
+        var temp2=[]
+        var temp3=$('#ts3 #sh1').data().chips
+        for (var i = 0; i < temp3.length; i++) {
+          temp2.push({data:temp3[i].tag,id:i,type:"#sh1"})
+        }
+        temp3=$('#ts3 #t1').data().chips
+        for (var i = 0; i < temp3.length; i++) {
+          temp2.push({data:temp3[i].tag,id:i,type:"#t1"})
+        }
+        if(temp1.length>0)
+        {
+
+          upload(temp1[0],temp2);
+        }
+      })
+
+  $(document).ready(function(){
+
+$('.chips').material_chip()
+$('.progress').hide();
+{{#each user.details}}
+if("{{this.id}}"=="profpic"){
+$("#"+usrname).attr("src","{{this.data}}");
+
+}
+{{/each}}
+
+  })
+  </script>

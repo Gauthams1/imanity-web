@@ -1,0 +1,325 @@
+
+<script type="text/javascript">
+socket.emit('tagr',{id:"{{user._id}}",username:"{{user.username}}"});
+socket.emit('recdett',{id:"{{user._id}}",username:"{{user.username}}"})
+socket.on('tagt',function(data){
+ taginfo=data;
+setInterval(init(),50)
+   });
+   socket.on('recdet',function(data){
+     console.log(data.data);
+     var tempd= data.data;
+     for (var i = 0; i < tempd.length; i++) {
+       if(tempd[i].type=="name"&&tempd[i].id=="occupation")
+       {$('#'+tempd[i].data).attr('checked','checked');$('#'+tempd[i].data+'d').show();}
+        if(tempd[i].type=="loc"&&tempd[i].id=="occupation")
+        {
+          $('#loc').append(disp(tempd[i].data.lat,tempd[i].data.long,17,"").htm)
+        }
+     }
+
+   })
+   socket.on('laymsgr',function(){
+     $('#emco').material_chip({ data: addata("emco"), autocompleteOptions: { data: addada(), limit: Infinity, minLength: 1 } });
+     $('.chip').addClass( "light-blue white-text" );
+   })
+   function tagk(){
+     for (var i = 0; i < taginfo.length; i++) {
+      if( taginfo[i].type=="mt1")
+      return taginfo[i]
+     }
+   }
+</script>
+  <div class="row">
+<div class="col s12">
+      <div class="input-field col s6">
+        <i class="material-icons prefix">account_circle</i>
+         <input id="first_name" type="text" class="validate" value="{{user.name}}">
+         <label for="first_name">Name</label>
+      </div>
+      <div class="input-field col s6">
+        <i class="material-icons prefix">account_circle</i>
+       <input  id="username" type="text" class="validate" value="{{user.username}}">
+       <label for="username">Username</label>
+      </div>
+</div>
+    <div class="col s12">
+      <div class="input-field col s10">
+       <input  id="EMAIL" type="email" class="validate" value="{{user.email}}">
+       <label for="EMAIL" data-error="wrong" data-success="right">E-mail</label>
+      </div>
+
+    </div>
+    <div class="col s12">
+      <div class="input-field col s12">
+       <textarea id="addr" class="materialize-textarea" value="{{user.phprimary}}"></textarea>
+       <label for="addr" >address</label>
+      </div>
+    </div>
+    <div class="col s12">
+      <label for="phno">Phone Number</label>
+      <div class="col s12 chips" id="phno">
+      </div>
+    </div>
+    <div class="col s12">
+     <input class="with-gap" name="group1" type="radio" id="civilian" />
+     <label for="civilian">civilian</label>
+     <input class="with-gap" name="group1" type="radio" id="Hospital" />
+     <label for="Hospital">Hospital</label>
+     <input class="with-gap" name="group1" type="radio" id="pharmacist"  />
+     <label for="pharmacist">pharmacist</label>
+     <input class="with-gap" name="group1" type="radio" id="Driver"  />
+     <label for="Driver">Driver</label>
+   </div>
+   <din class="col s12 rcus" id="civiliand">
+     <div class="row">
+
+     <h3>Medical Details</h3>
+
+
+       <div class="input-field col s12">
+         <h5>allergies</h5>
+     <div class="chips chips-autocomplete chips-initial" id="allergies"></div>
+       </div>
+       <div class="input-field col s12">
+           <h5>habbit</h5>
+     <div class="chips chips-autocomplete chips-initial" id="habbit"></div>
+       </div>
+       <div class="input-field col s12">
+           <h5>Contact from here </h5>
+       <div class="chips chips-autocomplete chips-initial" id="emco"></div>
+       </div>
+       <div class="input-field col s12">
+           <h5>emergency contact number</h5>
+       <div class="chips chips-autocomplete chips-initial" id="ecno"></div>
+       </div>
+       <div class="input-field col s12">
+           <h5>additional</h5>
+       <div class="chips chips-autocomplete chips-initial" id="additional"></div>
+       </div>
+
+       <div class="input-field col s12">
+          <select id="s1">
+            <option value="" disabled selected>Blood group</option>
+            <option value="A+ve">A+ve</option>
+            <option value="B+ve">B+ve</option>
+             <option value="O+ve">O+ve</option>
+              <option value="AB+ve">AB+ve</option>
+              <option value="A-ve">A-ve</option>
+              <option value="B-ve">B-ve</option>
+               <option value="O-ve">O-ve</option>
+                <option value="AB-ve">AB-ve</option>
+
+          </select>
+          <label for="s1">hello</label>
+
+        </div>
+        <div class="col s12" id="medicalup">
+        </div>
+     </div>
+   </din>
+   <din class="col s12 rcus" id="Hospitald">
+     <div class="input-field col s6">
+       <i class="material-icons prefix">account_circle</i>
+        <input id="id" type="text" class="validate" >
+        <label for="id">Hospital Id</label>
+     </div>
+     <div class="input-field col s6" id="loc">
+
+     </div>
+
+   </din>
+   <din class="col s12 rcus" id="pharmacistd">pharmacistd</din>
+   <din class="col s12 rcus" id="Driverd">Driverd</din>
+<button class="btn" id="b0">submit</button>
+
+  </div>
+  <div class="row">
+      <h3>Change password</h3><div class="col s12">
+    <div class="input-field col s6">
+      <i class="material-icons prefix">account_circle</i>
+       <input id="p1" type="password" class="validate" >
+       <label for="p1">Current Password</label>
+    </div></div>
+    <div class="col s12">
+    <div class="input-field col s6">
+      <i class="material-icons prefix">account_circle</i>
+       <input id="p2" type="password" class="validate" >
+       <label for="p2">New password</label>
+    </div></div><div class="col s12">
+    <div class="input-field col s6">
+      <i class="material-icons prefix">account_circle</i>
+       <input id="p3" type="password" class="validate" >
+       <label for="p3">Conform</label>
+    </div></div>
+<button class="btn" id="b1">submit</button>
+
+  </div>
+
+
+<script type="text/javascript">
+var civilian='<div class="col s12"> <div class="input-field col s6"> <i class="material-icons prefix">date_range</i> <input id="date" type="date" class="datepicker" value="{{user.date}}"> <label for="date" >Date he bhai</label> </div> </div>'
+function disp(lat,long,zoom="18",meta)
+{
+var cen="https://maps.google.com/maps/api/staticmap?sensor=false&scale=4&center=" + lat + "," + long +   "&zoom="+zoom+"&size=1000x1000&markers=color:red|label:X|" + lat+ ',' + long+"&key=AIzaSyAgcoQAzFL_Mxvu8uiyQkBXHhLApfU6I-c";
+return {htm:'<image width="100%" class="materialboxed" data-caption="'+meta+'" src="'+cen+'"  ></image>',link:cen};
+
+}
+var selfallergiesdata=[];
+$('.datepicker').pickadate({
+   selectMonths: true, // Creates a dropdown to control month
+   selectYears: 15, // Creates a dropdown of 15 years to control year
+  onClose: function(dateText, inst){$(document.activeElement).blur();}
+ });
+$('#b1').click(function(){
+  if($('#p2')[0].value.length>0&&($('#p2')[0].value==$('#p3')[0].value))
+  $.post("/users/rmsg",{pass:$('#p1')[0].value,pass2:$('#p2')[0].value});
+
+})
+$('#b0').click(function(){
+  if($('input[type=radio]:checked').length==0)
+  return ;
+  else {
+    var tv1=$('input[type=radio]:checked')[0].id;
+    var phnos=$('#phno').material_chip('data');
+    var phonenoupdate=[]
+    for (var i = 0; i < phnos.length; i++) {
+    phonenoupdate.push(phnos[i].tag)
+    }
+    $.post('/usersm/phoneup',{data:JSON.stringify(phonenoupdate)})
+    if(tv1=="civilian")
+    {civil1 ();$.post('/users/detailup',{data:JSON.stringify({data:tv1,type:"name",id:"occupation"})});
+    }
+    else {
+      console.log($('#'+tv1+'d input'));
+      $.post('/users/detailup',{data:JSON.stringify({data:tv1,type:"name",id:"occupation"})})
+      navigator.geolocation.getCurrentPosition(function (data){
+        $.post('/users/detailup',{data:JSON.stringify({data:{lat:data.coords.latitude,long:data.coords.longitude},type:"loc",id:"occupation"})})
+      })
+
+    }
+
+
+  }
+
+})
+$('input[type=radio]').change(function(event){
+  //console.log(event.target);
+  $('.rcus').hide();
+  $('#'+event.target.id+"d").show();
+
+})
+//$('input[type=radio]:checked')[0].id
+function civil1 (){
+  var al=$('#allergies').data().chips;
+  var ha=$('#habbit').data().chips;
+  var ad=$('#additional').data().chips;
+  var con=$('#emco').data().chips;
+  var conn=$('#ecno').data().chips;
+  for (var i = 0; i < al.length; i++) {
+ selfallergiesdata.push({data:al[i].tag,type:"allergies"})
+
+  }
+  for (var i = 0; i < con.length; i++) {
+ selfallergiesdata.push({data:con[i].tag,type:"emco"})
+
+  }
+  for (var i = 0; i < conn.length; i++) {
+ selfallergiesdata.push({data:conn[i].tag,type:"ecno"})
+
+  }
+  for (var i = 0; i < ha.length; i++) {
+ selfallergiesdata.push({data:ha[i].tag,type:"habbit"})
+
+  }
+  for (var i = 0; i < ad.length; i++) {
+ selfallergiesdata.push({data:ad[i].tag,type:"additional"})
+  }
+selfallergiesdata.push({data:$('#s1')[0].value,type:"blood"})
+$.post('/users/tagbulk',{name:"med",data:JSON.stringify(selfallergiesdata),tocall:"{{user.username}}",type:"mt1"})//name,data,tocall,type;
+}
+function addata(datatype)
+{ var tempvar=[]
+  if(!tagk())
+  return ;
+  var te1=tagk().data;
+  for (var i = 0; i < te1.length; i++) {
+    if(te1[i].type==datatype)
+    tempvar.push({tag:te1[i].data})
+  }
+  return tempvar;
+
+}
+function addada() {
+  var tempv={}
+  if(!us)
+  return;
+  for (var i = 0; i < us.length; i++) {
+    if (us[i].type=="friend") {
+      tempv[(us[i].data)]=null;
+    }
+  }
+  console.log(tempv);
+  return tempv;
+
+}
+function phone() {
+  var phoneno=[{{user.ph}}];
+  console.log(phoneno);
+  var temp=[]
+  for (var i = 0; i < phoneno.length; i++) {
+    temp.push({tag:phoneno[i]})
+  }
+  console.log(temp);
+  return temp;
+}
+function init()
+{
+  $('.chips').material_chip();
+
+$('#allergies').material_chip({
+  placeholder: '+Allergies',
+  data: addata("allergies"),
+});
+$('#habbit').material_chip({
+  placeholder: '+Habbit',
+  data: addata("habbit"),
+});
+$('#additional').material_chip({
+  placeholder: '+additional',
+  data: addata("additional"),
+});
+$('#ecno').material_chip({
+  placeholder: '+additional',
+  data: addata("ecno"),
+});
+$('#phno').material_chip({
+    data: phone(),
+});
+if(addata("blood"))
+{
+  $('options[value="'+addata("blood")[0].tag+'"]').attr("selected","selected");
+  $("#s1")[0].value=addata("blood")[0].tag;
+
+}
+$('#emco').material_chip({
+  data: addata("emco"),
+   autocompleteOptions: {
+     data: addada(),
+     limit: Infinity,
+     minLength: 1
+   }
+
+ });
+
+}
+$(document).ready(function(){
+
+    $('.rcus').hide();
+$('.btn').click(function(){
+location.reload();
+})
+
+})
+
+</script>

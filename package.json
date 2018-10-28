@@ -1,0 +1,38 @@
+{
+  "name": "Imanity",
+  "version": "1.0.0",
+  "description": "my idea",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon --ignore 'public/*.js' app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin":"app.js",
+  "pkg": {
+    "scripts": "routes/**/*.js",
+    "assets": ["public/**/*","views"]
+  },
+  "author": "Gautham",
+  "license": "ISC",
+  "dependencies": {
+    "@google/maps": "*",
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "connect-flash": "*",
+    "cookie-parser": "*",
+    "express": "*",
+    "express-handlebars": "*",
+    "express-messages": "*",
+    "express-session": "*",
+    "express-validator": "*",
+    "google-places": "*",
+    "http": "*",
+    "mongodb": "*",
+    "mongoose": "*",
+    "passport": "*",
+    "passport-http": "*",
+    "passport-local": "*",
+    "socket.io": "*",
+    "web-push": "*"
+  }
+}

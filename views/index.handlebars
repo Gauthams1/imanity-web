@@ -1,0 +1,183 @@
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgcoQAzFL_Mxvu8uiyQkBXHhLApfU6I-c&callback=initial1"> </script>
+<script type="text/javascript">
+var blue="b6e3e0";
+var red="fa8072";
+var green="00ff00";
+
+function initial1() {
+  sentpos();
+}
+if (window.location.protocol=="http:"&&window.location.host.indexOf("localhost")<0) {
+  window.location.protocol="https:";
+}
+var map=0;
+var bound=0;
+var markers=[];
+function initmap(lat,lng){
+        map = new google.maps.Map(document.getElementById('map'), {
+         zoom: 17,
+         center: {lat:lat, lng:lng}
+       });
+}
+function markeradd(lat,lng,map1,title,l1,colour) {
+  var marker = new google.maps.Marker({
+     position:{lat:lat,lng:lng},
+     map: map1,
+     animation:google.maps.Animation.DROP,
+     title: title,
+     icon:"https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+l1+"|"+colour
+   });
+   markers.push(marker);
+}
+function posid(id,lat,long){
+  getp = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&key=AIzaSyDkH0dKcdQO_3flkGri9JA7vJAT2dWYM-8';
+  $.getJSON(getp,function(kal){
+      $('#'+id).html(kal.results[0].formatted_address)
+    })
+}
+function returnmap(lat,long,color,url,lab)
+{
+  if(url=="")
+  return "https://maps.google.com/maps/api/staticmap?sensor=false&scale=2&size=1000x1000&maptype=terrain&key=AIzaSyAgcoQAzFL_Mxvu8uiyQkBXHhLApfU6I-c&markers=color:"+color+"|label:"+lab+"|" + lat+ ',' + long;
+else {
+  return url+"&markers=color:"+color+"|label:"+lab+"|" + lat+ ',' + long;
+}
+}
+function sentpos(s2="hospital",dist=1000){
+  navigator.permissions.query({name:'geolocation'}).then(function(result) {
+  if (result.state == 'granted') {
+    navigator.geolocation.getCurrentPosition(function (data){
+  socket.emit('search1',{lat:data.coords.latitude,long:data.coords.longitude,usr:"{{user.username}}",dist:dist,search:s2});
+  })
+  }
+   else if (result.state == 'denied'||result.state == 'prompt') {
+  $('#cardrevtitle').html("Location Service Unavailable")
+  $('#revtag').html("<br /><h6>please turn on the service</h6>")
+  //$('.activator').click()
+  $.getJSON('https://ipapi.co/json/',function(data){
+  //  console.log(data.latitude+","+data.longitude);
+    socket.emit('search1',{lat:data.latitude,long:data.longitude,usr:"{{user.username}}",dist:dist,search:s2});
+  })
+
+  }
+  });
+
+return 100;
+}
+function updatedivs(data) {
+    $('.s5').empty()
+console.log(data);
+  var origin=0
+  url="";  temp3="";count=1;id=0;temp1=0;
+  for (var i = 0; i < data.length; i++) {
+      if(data[i].type=="found")
+  {  temp1=data[i].details;
+    console.log(temp1[i]);
+      for (var j = 0; j < temp1.length; j++) {
+        if(!temp1[i])
+      continue;
+      if(temp1[i].type=="loc")
+  { if(!!(temp1[j].data.lat))
+    {url=returnmap(temp1[j].data.lat,temp1[j].data.long,"red",url,count);count++;
+        temp3+='<ul class="collapsible " data-collapsible="accordion" title="'+(count-1)+'"> <li> <div class="collapsible-header red white-text"><div style="float:left" >'+(count-1)+'</div><center>'+data[i].name+'</center></div><div class="collapsible-body"><span><div class="s12 " id="'+data[i].name+'"></div></span></div> </li></ul>'
+  id={a:data[i].name,b:temp1[j].data.lat,c:temp1[j].data.long};
+  posid(id.a,id.b,id.c)
+  markeradd(temp1[j].data.lat,temp1[j].data.long,map,data[i].name,(count-1).toString(),red)
+  } } }}
+    if(data[i].type=="not found")
+  {  temp1=data[i].result;
+  kick=0
+  if(temp1.length>8)
+   kick=8;
+  else {
+   kick=temp1.length;
+  }
+  for (var j = 0; j < kick; j++) {
+    url=returnmap(temp1[j].geometry.location.lat,temp1[j].geometry.location.lng,"blue",url,count);count++;
+    temp3+='<ul class="collapsible " data-collapsible="accordion" title="'+(count-1)+'"> <li> <div class="collapsible-header blue white-text"><div style="float:left" >'+(count-1)+'</div><center>'+temp1[j].name+'</center></div><div class="collapsible-body"><span><div class="s12 " >'+temp1[j].vicinity+'</div></span></div> </li></ul>'
+      markeradd(temp1[j].geometry.location.lat,temp1[j].geometry.location.lng,map,temp1[j].name,(count-1).toString(),blue)
+  }}
+    if(data[i].type=="location")
+    {url=returnmap((data[i].lat),(data[i].long),"green",url,"X");
+    origin={lat:data[i].lat,long:data[i].long}
+    initmap(data[i].lat,data[i].long);
+    markeradd(data[i].lat,data[i].long,map,"you","x",green)
+  } }
+  $('#tag').empty();
+   $('#tag').append('<div class="s12" >'+temp3+'</div>')
+   for (var i in markers) {
+     bound.extend(markers[i].getPosition());
+   }
+   map.fitBounds(bound);
+
+
+
+
+  $('.materialboxed').materialbox();
+   $('.collapsible').collapsible();
+
+}
+socket.on('search1r',function(data){
+  bound = new google.maps.LatLngBounds();
+  markers=[];
+  updatedivs(data)
+})
+$(document).ready(function(){
+  $('#serind').keypress(function(e){
+        if (e.keyCode == 13) {
+      sentpos($('#serind')[0].value,$('#range')[0].value);
+    }
+  })
+  $('#serind').select(function(e){
+      //sentpos($('#serind')[0].value,$('#range')[0].value);
+  //    console.log(e);
+  })
+$('#range').change(function(e){
+
+  sentpos($('#serind')[0].value,e.target.value);
+})
+
+})
+</script>
+
+<div  class="row">
+<div class="col s12">
+  <div class="card">
+    <div class="card-image waves-effect waves-block waves-light">
+      <div class="row s12"><div class="col s12">
+        <div class="col s3"></div>
+        <div class="input-field col s6">
+          <input  id="serind" list="browsers" class="validate" value="hospital">
+        <datalist id="browsers">
+        <option value="Hospital">
+        <option value="Ambulance">
+        <option value="pharmacy">
+        <option value="Cab">
+        <option value="Hotel">
+      </datalist>
+        </div>
+        <div class="col s3"></div></div><div class="col s3"></div>
+        <div class="col s6">
+          <p class="range-field">
+        <input type="range" id="range" value="1000" min="1000" max="10000" />
+      </p><div class="col s3"></div>
+        </div>
+
+      </div>
+      <div class="col s12"><div class="col s7"><div id="map" style="width:100%;height:400px;" ></div></div><div id="tag" class="col s5"></div></div>
+    </div>
+    <div class="card-content">
+      <span class="card-title activator grey-text text-darken-4">Services<i class="material-icons right">more_vert</i></span>
+      <p> </p>
+    </div>
+    <div class="card-reveal">
+      <span  class="card-title grey-text text-darken-4"><span id="cardrevtitle">Title</span><i class="material-icons right">close</i>
+        <p id="revtag"></p>
+      </span>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+
+</div>

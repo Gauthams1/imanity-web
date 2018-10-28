@@ -1,0 +1,48 @@
+
+{{teststat1}}
+<!--
+  <select class="form-control" id="hello"  >
+    {{#each usrv}}
+  <option value="{{data}}">{{data}}</option>
+  {{/each}}
+</select>
+<video id="v1" autoplay></video>
+<div class="container">
+<img id="v2" autoplay></img></div>
+<canvas id="dispcan" style="display:none" style="border:1px solid #d3d3d3;">
+
+<script>
+ 'use strict';
+navigator.getUserMedia = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+var constraints = {
+  audio: true,
+  video: true
+};
+ var c=document.getElementById("dispcan");
+  var ctx=c.getContext("2d");
+  c.height=600;
+  c.width=600;
+  var video = document.getElementById("v1");
+  var img = document.getElementById("v2");
+setInterval(function(){
+  ctx.drawImage(video,0,0,c.width,c.height);
+    socket.emit('video',{to:document.getElementById("hello").value,data: c.toDataURL('image/jpeg')});
+  }, 20);
+socket.on('videor',function(data){
+  img.src=data;
+    });
+
+function successCallback(stream) {
+  window.stream = stream; // stream available to console
+  if (window.URL) {
+    video.src = window.URL.createObjectURL(stream);
+  } else {
+    video.src = stream;
+  }
+}
+function errorCallback(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
+navigator.getUserMedia(constraints, successCallback, errorCallback);
+</script> -->

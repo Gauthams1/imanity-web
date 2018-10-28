@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+   ::-webkit-scrollbar {
+    width: 0px;
+  }
+  body[style] {
+   background-attachment: fixed  !important;
+   background-size:  cover !important;
+   min-height: 100%;
+   padding: 2%;
+}
+/*nav li a{
+  color:#000 !important;
+}
+#sbar li a{
+  color:#000 !important;
+  width: 13vw;
+  height:100%;
+  padding: 0 vw !important;
+  background-color: rgba(0,0,0,0.1);
+  margin-bottom:0.5vh !important;
+  margin-left: 0vw
+  border-radius: 5px;
+}
+#sbar li a:hover{
+  color:#000 !important;
+  width: 15vw;
+  height:100%;
+  padding: 1 vw !important;
+  background-color: rgba(255,255,255,0.1);
+  color: #000;
+  margin-bottom:0.5vh !important;
+  border-radius: 5px;
+}
+
+nav li a:hover{
+  color:#aaa !important;
+}
+.col-3 {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+center strong {
+  color:#000;
+}*/
+
+
+</style>
+  <title>Imanity</title>
+  <script src="/js/client.js"></script>
+  <link rel="stylesheet" href="/css/bootstrap.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/materialize.min.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/css/style1.css" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/images/prj57-48x48.png">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+    <script>
+    usrname = "{{act.username}}";
+    usname = "{{act.name}}";
+    var cljs=0;
+    var socket = io.connect();
+    var msg = document.createElement('div');
+    var bgCounter = 0,
+      backgrounds = [
+        "/images/1.jpg",
+        "/images/2.jpg",
+        "/images/3.jpg",
+        "/images/4.jpg",
+        "/images/5.jpg",
+        "/images/6.jpg",
+        "/images/7.jpg"
+      ];
+    var profpic = 0;
+    var us = 10;
+    var messagedata = 0;
+    screen.orientation.lock('landscape').then(function() {}).catch(function() {})
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+    if ("{{user.username}}" == "") {
+      navigator.serviceWorker.ready.then(function(reg) {
+        reg.pushManager.getSubscription().then(function(subscription) {
+          if (subscription !== null) {
+            subscription.unsubscribe().then(function(successful) {
+              console.log("unsubscribe");
+              socket.emit("gcmtestunsub", subscription);
+            }).catch(function(e) {
+            })
+          }
+        })
+      });
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    socket.on('msg-usr', function(data) {
+      msg.innerHTML = '<div class="well " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;" ><abbr title="' + data.crtd +
+        '"><font style="font-size:0.8em" ><a ><img src="http://orig04.deviantart.net/f212/f/2015/252/d/c/batman_facebook_profile_picture_by_jmralls2001-d990c1a.png" class=" img-circle ' + data.duname +
+        '"style="max-width:2.4vw;max-height:2.4vw""></a>: ' + data.data + '</font></abbr></div>' + msg.innerHTML;
+    $('#msg').append(msg.innerHTML);
+      ppic();
+    });
+    socket.on('laymsgr', function(data) {
+      us = data.us;
+      $('#friend').find('option').remove().end();
+      profpic = data.us1;
+      for (i = 0; i < us.length; i++) {
+        sentuser = document.getElementById(us[i].type);
+
+      }
+      ppic();
+      msgdivrecreq();
+    });
+  
+    function ppic() {
+      for (var i = 0; i < profpic.length; i++) {
+        if (profpic[i].data.length > 0)
+          $('.' + profpic[i].Disc + '').each(function() {
+            $(this).attr("src", profpic[i].data);
+          })
+        else
+          $('.' + profpic[i].Disc + '').each(function() {
+            $(this).attr("src", "https://s-media-cache-ak0.pinimg.com/736x/f0/ba/84/f0ba8451311a28cb3fa3c1c16872bf86--comic-manga-comic-art.jpg");
+          })
+      }
+    }
+    function a1(image, def) {
+      image.src = def
+    }
+    function msgdivrecreq() {
+      ppic();
+    }
+    function changeBackground() {
+      bgCounter = getRandomInt(0, 6);
+      $('body').css('transition', 'background 1s ease');
+      $('body').css('background', '#fff ');
+      }
+    $(document).ready(function() {
+          cljs = new ClientJS();
+          $(".afterload").delay(100).fadeIn("fast");
+          $('#popa').css("width", "3vw");
+          $('#popa').css("height", "3vw");
+          $('#popa').css("border-radius", "100%");
+          $('a').css("margin", "0%");
+          $('a').css("padding-bottom", "0%");
+          $('#propic').css("width", "12vw");
+          $('#propic').css("height", "12vw");
+          $('#propic').css("border-radius", "100%");
+          $('#propic').css("-webkit-filter", "blur(10px)");
+          $(".sbar").css("left", "0vw");
+          $('#bdy').css("left", "3vw");
+          $('#rbar').css("right", "-0px");
+          $("#propic").hover(function(){
+            $(this).css("-webkit-filter", "none");
+            $(this).css("-webkit-transition", "800ms");
+          },function(){
+              $(this).css("-webkit-filter", "blur(10px)");
+          })
+          $(".sbar").hover(function() {
+            $(this).css("left", "0vw");
+            $(this).css("-webkit-transition", "1000ms");
+            $('#rbar').css("-webkit-transition", "700ms");
+            }, function() {
+
+            $(this).css("left", "0vw");
+            });
+            {  if (!Notification) {
+            alert('Desktop notifications not available in your browser. Try Chromium.');
+            return;
+          }
+          if (Notification.permission !== "granted")
+            Notification.requestPermission();
+        }
+          $("#myModal").on('show.bs.modal', function(event) {
+            var button = (event.relatedTarget);
+            $(".modal-title").html('<center><' + event.relatedTarget.nodeName + ' src="' + event.relatedTarget.src + '" " onerror="a1(this,' + event.relatedTarget.src + ')" id="modtest" style="height:100%;width:100%;" ></center><center>' +
+              'Change ' + button.name + '</center>');
+            $("#recipient-name").focus(function() {
+              $("#recipient-name").keyup(function() {
+                if (document.getElementById("recipient-name").value.length > 5) $(".modal-title").html('<center><' + event.relatedTarget.nodeName + ' src="' + document.getElementById("recipient-name").value + '" onerror="a1(this,' +
+                  event.relatedTarget.src + ')" id="modtest" style="height:100%;width:100%;" ></center><center>' + 'Change ' + button.name + '</center>');
+              })
+            })
+            $("#recipient-name").focusout(function() {
+              $(".modal-title").html('<center><' + event.relatedTarget.nodeName + ' src="' + event.relatedTarget.src + '" " onerror="a1(this,' + event.relatedTarget.src + ')" id="modtest" style="height:100%;width:100%;" ></center><center>' +
+                'Change ' + button.name + '</center>');
+            })
+            $('#chmod').click(function() {
+              socket.emit('link1', {
+                username: "{{user.username}}",
+                usrid: "{{user._id}}",
+                type: button.id,
+                data: document.getElementById("recipient-name").value
+              });
+              $('#' + event.relatedTarget.id).attr("src", document.getElementById("recipient-name").value);
+              $("#myModal").modal('toggle');
+              $(".modal-backdrop").remove();
+            });
+          });
+
+          changeBackground();
+
+            $('#friend').click(function() {
+              $("#msg div").empty();
+              socket.emit('usermsg', {
+                id: "{{user._id}}",
+                username: "{{user.username}}"
+              });
+              msgdivrecreq();
+            });
+            $('#data1').keypress(function(e) {
+              if (e.keyCode == 13) {
+                var data = document.getElementById('data1').value;
+                var to = document.getElementById('friend').value;
+                var user_id = "{{user._id}}";
+                var usern = "{{user.name}}";
+                sdata = {
+                  data: data,
+                  user: user_id,
+                  usrnm: usern,
+                  fromn: "{{user.username}}",
+                  to: to,
+                  from: usern
+                };
+                socket.emit('msg', sdata);
+                msg.innerHTML = '<div class="well alert alert-info " style="margin:-15px;line-height: 80%;display: block;word-wrap: break-word;text-align:right;" ><font size="-2" >' + sdata.data + '</font></div>' + msg.innerHTML;
+                document.getElementById('msg').appendChild(msg);
+                $('#data1').val('');
+              }
+            });
+            socket.emit('usermsg', {
+              id: "{{user._id}}",
+              username: "{{user.username}}"
+            });
+            socket.on('usermsgr', function(data) {
+              messagedata = data.u1;
+              unread = data.u2;
+              $("#mesnmbr").html(unread.length);
+              for (var i = 0; i < unread.length; i++) {
+                $('#msgdropdown').append('<div style="display:block;" ><div class="container-fluid" style="float:left"><img style="height:3vw;width:3vw;border-radius:100%" class="'+unread[i].Fromn+'"></div><div  style="">'+unread[i].from+":    "+unread[i].data+'</div><div>')
+              }
+              if (unread.length) {
+                $('.mesnm').css("color", "#00FFFF")
+              } else {
+                $('.mesnm').css("color", "unset")
+              }
+
+            });
+
+            if("serviceWorker" in navigator ){
+              navigator.serviceWorker.register("/sw.js",{scope:"/"}).then(
+                function(reg){
+                if("{{user.username}}"!="")
+                return reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: new urlBase64ToUint8Array("BDZTGzgyvbNav5NOqJR6XXKHd7XqWTjg0vFRFQKbS-aJsEbO7ArWegYDNsaRvOf3MTEMruOLD0pui5R-KOEsMj8")
+                })
+                    .then(function(subscription) {
+                      var fingerprint = cljs.getCustomFingerprint();
+                      return socket.emit("gcmtest",{data:{uname:"{{user.username}}",id:(window.screen.availWidth+window.screen.availHeight)+""+fingerprint},subobj:subscription});
+                    })  }
+              ).catch(function(err){
+              })
+
+
+              }
+
+
+        });
+
+  </script>
+
+</head>
+
+<body class="desp html-mobile-background" >
+
+<div class="afterload" style="display:none" >
+
+    <div>
+      <div>
+        <div>
+  {{{body}}}
+  </div>
+  </div>
+  </div>
+
+
+  </div>
+
+
+
+</body>
+<script type="text/javascript">
+
+</script>
+</html>
